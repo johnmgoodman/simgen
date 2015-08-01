@@ -1,3 +1,5 @@
+var RNA = require('./RNA');
+
 var RNAPoly = function RNAPoly() {
 
 };
@@ -28,7 +30,7 @@ RNAPoly.prototype._transcribe = (function() {
         geneseq = relevantSeq.substr(0,terminatorIndex);
         relevantSeq = relevantSeq.substr(terminatorIndex + terminatorLength);
 
-        return this._transcribe(relevantSeq).concat(new RNA(geneseq));
+        return [new RNA(geneseq)].concat(this._transcribe(relevantSeq));
       } else {
         return [new RNA(relevantSeq)];
       }

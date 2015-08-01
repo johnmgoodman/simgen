@@ -1,6 +1,8 @@
-var DNA = function DNA() {
-  this.__sequence = "";
-}
+var DNA = function DNA(initSequence) {
+  if(typeof initSequence === 'string') {
+    this.__sequence = initSequence;
+  }
+};
 
 
 /*
@@ -27,13 +29,13 @@ DNA.prototype.deletion = function(index, length) {
 DNA.prototype.duplication = function(index, length, count) {
   var dnaseq = this.__sequence,
     dupCount = 1;
-  
+
   this.__sequence = dnaseq.substr(0,index);
-  
+
   for(;dupCount <= count;dupCount += 1) {
     this.__sequence += dnaseq.substr(index, length);
   }
-  
+
   this.__sequence += dnaseq.substr(index+length);
   return this;
 };
@@ -52,7 +54,7 @@ DNA.prototype.sequence = function(sequence) {
     this.__sequence = sequence;
     return this;
   }
-  
+
   return this.__sequence;
 };
 
