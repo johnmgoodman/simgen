@@ -64,7 +64,7 @@ Ribosome.prototype._translate = (function() {
       // stop codon found
         polypepCodons = relevantCSeq.slice(0, stopIndex);
         relevantCSeq = relevantCSeq.slice(stopIndex + 1);
-        return this._translate(relevantCSeq).concat( constructPolypeptide(polypepCodons) );
+        return [constructPolypeptide(polypepCodons)].concat(this._translate(relevantCSeq));
       } else {
         return [constructPolypeptide(relevantCSeq)];
       }

@@ -36,7 +36,7 @@ describe("Ribosome", function() {
         'CCC',
         Ribosome.TRANSLATION_STOP_CODONS[0],
         'CCC',
-        Ribosome.TRANSLATION_START_CODONS[0],
+        Ribosome.TRANSLATION_START_CODONS[0], // polypep 0
         Ribosome.TRANSLATION_STOP_CODONS[0],
         Ribosome.TRANSLATION_START_CODONS[0], // polypep 1
         'CCC',
@@ -53,8 +53,14 @@ describe("Ribosome", function() {
         Ribosome.TRANSLATION_START_CODONS[0],
         'CCC'
       ].join(''),
-      ami1 = new Aminoid('c'),
-      ami2 = new Aminoid('S');
+      ami1 = new Aminoid({
+        label: 'c',
+        anticodons: ['CCC']
+      }),
+      ami2 = new Aminoid({
+        label: 'S',
+        anticodons: [Ribosome.TRANSLATION_START_CODONS[0]]
+      });
 
       ami1.anticodons('CCC');
       ami2.anticodons(Ribosome.TRANSLATION_START_CODONS[0]);
@@ -67,8 +73,7 @@ describe("Ribosome", function() {
 
       it('should translate accurately', function() {
         var rna = new RNA(peculiarSequence);
-
-        expect(ribo.translate(rna)).toEqual(['Sc','SScc','ScSc']);
+        expect(ribo.translate(rna)).toEqual(['S', 'Sc','SScc','ScSc']);
       });
 
   });
