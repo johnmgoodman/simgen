@@ -1,11 +1,17 @@
 
-var Aminoid = function Aminoid(initLabel) {
-  if(typeof initLabel === 'string') {
-    if(initLabel.length === 1) {
-      this.__label = initLabel;
+var Aminoid = function Aminoid(init) {
+  if(init.hasOwnProperty('label')) {
+    if(init.label.length === 1) {
+      this.__label = init.label;
     } else {
       this._labelLengthError();
     }
+  }
+  if(init.hasOwnProperty('anticodons')) {
+    this.__anticodons = init.anticodons;
+  }
+  if(this.hasOwnProperty('__anticodons') && this.hasOwnProperty('__label')) {
+    Aminoid._register(this);
   }
 };
 

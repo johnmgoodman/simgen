@@ -23,4 +23,15 @@ describe("Aminoid", function() {
     });
 
   });
+
+  it("should accept an object in its constructor to set its anticodons and label", function() {
+    var setup = {
+      label: 'n',
+      anticodons: ['CGA','TCT','CCA']
+    },
+    ami = new Aminoid(setup);
+
+    expect(ami.label()).toBe(setup.label);
+    expect(ami.anticodons()).toEqual(setup.anticodons);
+  });
 });
