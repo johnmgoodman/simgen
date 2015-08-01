@@ -18,6 +18,10 @@ Aminoid._register = function(aminoid) {
   });
 }
 
+Aminoid.codonLookup = function(codon) {
+  return Aminoid.__anticodonMap[codon];
+};
+
 
 
 Aminoid.prototype.label = function(label) {
