@@ -1,12 +1,16 @@
 
 var RNA = function RNA(initSequence) {
-  this.__sequence = initSequence || "";
+  if(typeof initSequence === 'string') {
+    this.nucleic_acid_sequence(initSequence);
+  }
 };
 
+require('./modules/NucleicAcid').call(RNA);
 
 RNA.prototype.sequence = function(sequence) {
-  return this.__sequence = this.__sequence || sequence;
+  return this.nucleic_acid_sequence(sequence);
 };
+
 
 RNA.prototype.codons = function() {
   return this.__codons = this.__codons || this.sequence().match(/.{3}/g);

@@ -19,17 +19,6 @@ describe("RNA", function() {
 
       expect(rnaTranscript.sequence()).toBe(givenSequence);
     });
-
-    it("should not allow its sequence to be changed once it is set", function() {
-      var rnaTranscript = new RNA(),
-        seq1 = "ATATATATATATATAT",
-        seq2 = "GCGCGCGCGCGCGCGC";
-
-      rnaTranscript.sequence(seq1);
-      rnaTranscript.sequence(seq2);
-
-      expect(rnaTranscript.sequence()).toBe(seq1);
-    });
   });
 
   it("should implement a codons method", function() {
