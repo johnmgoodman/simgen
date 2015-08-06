@@ -1,24 +1,19 @@
 (function() {
-  var DNA = require('./core/DNA'),
-    RNA = require('./core/RNA'),
-    Aminoid = require('./core/Aminoid'),
-    RNAPoly = require('./core/RNAPoly'),
-    Ribosome = require('./core/Ribosome'),
-
+  var simgen = require('./simgen.js'),
     baseAminoidData = require('./aminoids/base_aminoids'),
 
 
 
     aminoids = []
-    orgDNA = new DNA(),
-    rnap = new RNAPoly(),
+    orgDNA = simgen.create('DNA'),
+    rnap = simgen.create('RNAPoly'),
     rnas = [],
-    ribo = new Ribosome(),
+    ribo = simgen.create('Ribosome'),
     polypeps = [];
 
 
   baseAminoidData.forEach(function(adata) {
-    aminoids.push(new Aminoid(adata));
+    aminoids.push( simgen.create('Aminoid',adata) );
   });
 
   orgDNA.sequence(
@@ -52,6 +47,9 @@
   );
 
   rnas = rnap.transcribe(orgDNA);
+
+  console.log('DNA:');
+  console.log(orgDNA);
 
   console.log('RNAs:');
   console.log(rnas);

@@ -5,9 +5,6 @@ var DNA = function DNA(initSequence) {
 };
 
 
-require('./modules/NucleicAcid').call(DNA,['mutations']);
-
-
 DNA.prototype.sequence = function(sequence) {
   return this.nucleic_acid_sequence(sequence);
 };

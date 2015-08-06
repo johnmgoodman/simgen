@@ -1,7 +1,7 @@
 var simgen = require('./simgen');
 
-var g = new simgen.DNA();
-var n = new simgen.RNA("DEF");
+var g = simgen.create('DNA');
+var n = simgen.create('RNA',"DEF");
 
 g.sequence("ABC");
 console.log(g);

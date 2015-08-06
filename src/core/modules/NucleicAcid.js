@@ -45,14 +45,11 @@ module.exports = (function() {
 
   };
 
-  return function(include) {
-    include = include || [];
+  return function() {
     this.prototype.nucleic_acid_sequence = methods.sequence;
-    if(include.indexOf('mutations') !== -1) {
-      this.prototype.nucleic_acid_point_mutation = methods.mutations.point;
-      this.prototype.nucleic_acid_insertion_mutation = methods.mutations.insertion;
-      this.prototype.nucleic_acid_deletion_mutation = methods.mutations.deletion;
-      this.prototype.nucleic_acid_duplication_mutation = methods.mutations.duplication;
-    }
+    this.prototype.nucleic_acid_point_mutation = methods.mutations.point;
+    this.prototype.nucleic_acid_insertion_mutation = methods.mutations.insertion;
+    this.prototype.nucleic_acid_deletion_mutation = methods.mutations.deletion;
+    this.prototype.nucleic_acid_duplication_mutation = methods.mutations.duplication;
   }
 })();

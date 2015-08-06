@@ -5,8 +5,6 @@ var RNA = function RNA(initSequence) {
   }
 };
 
-require('./modules/NucleicAcid').call(RNA);
-
 RNA.prototype.sequence = function(sequence) {
   return this.nucleic_acid_sequence(sequence);
 };
