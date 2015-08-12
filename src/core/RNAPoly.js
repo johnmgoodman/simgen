@@ -7,8 +7,8 @@ var RNAPoly = function RNAPoly() {
 RNAPoly.TRANSCRIPTION_PROMOTER_SEQUENCE = "ATATAA";
 RNAPoly.TRANSCRIPTION_TERMINATOR_SEQUENCE = "AAAAAAAAA";
 
-RNAPoly.prototype.transcribe = function(dna) {
-  return this._transcribe(dna.sequence());
+RNAPoly.prototype.transcribe = function(dna, callback) {
+  this._transcribe(this, dna.sequence(), callback);
 };
 
 
@@ -16,8 +16,8 @@ RNAPoly.prototype.transcribe = function(dna) {
 RNAPoly.prototype._transcribe = (function() {
   var promoterLength = RNAPoly.TRANSCRIPTION_PROMOTER_SEQUENCE.length,
     terminatorLength = RNAPoly.TRANSCRIPTION_TERMINATOR_SEQUENCE.length;
-  return function(dnaseq) {
-    var relevantSeq, promoterIndex, terminatorIndex, geneseq;
+  return function(env, dnaseq, callback) {
+    var relevantSeq, promoterIndex, terminatorIndex, geneseq, err = null;
 
     promoterIndex = dnaseq.indexOf(RNAPoly.TRANSCRIPTION_PROMOTER_SEQUENCE);
     if( promoterIndex !== -1) {
@@ -30,12 +30,11 @@ RNAPoly.prototype._transcribe = (function() {
         geneseq = relevantSeq.substr(0,terminatorIndex);
         relevantSeq = relevantSeq.substr(terminatorIndex + terminatorLength);
 
-        return [new RNA(geneseq)].concat(this._transcribe(relevantSeq));
+        callback(err, new RNA(geneseq));
+        process.nextTick(function(){env._transcribe(env, relevantSeq, callback);});
       } else {
-        return [new RNA(relevantSeq)];
+        callback(err, new RNA(relevantSeq));
       }
-    } else {
-      return [];
     }
   };
 })();

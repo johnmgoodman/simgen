@@ -9,8 +9,8 @@ Ribosome.TRANSLATION_STOP_CODONS = ["TAA","TAG","TGA"];
 
 
 
-Ribosome.prototype.translate = function(rna) {
-  return this._translate(rna.codons());
+Ribosome.prototype.translate = function(rna, callback) {
+  this._translate(this, rna.codons(), callback);
 };
 
 
@@ -53,8 +53,8 @@ Ribosome.prototype._translate = (function() {
     };
 
 
-  return function(codons) {
-    var relevantCSeq, startIndex, stopIndex, polypepCodons;
+  return function(env, codons, callback) {
+    var relevantCSeq, startIndex, stopIndex, polypepCodons, err = null;
     startIndex = firstStartIndex(codons);
     if(startIndex !== -1) {
     // start codon found
@@ -64,12 +64,11 @@ Ribosome.prototype._translate = (function() {
       // stop codon found
         polypepCodons = relevantCSeq.slice(0, stopIndex);
         relevantCSeq = relevantCSeq.slice(stopIndex + 1);
-        return [constructPolypeptide(polypepCodons)].concat(this._translate(relevantCSeq));
+        callback(err, constructPolypeptide(polypepCodons));
+        process.nextTick(function(){env._translate(env, relevantCSeq, callback);});
       } else {
-        return [constructPolypeptide(relevantCSeq)];
+        callback(err, constructPolypeptide(relevantCSeq));
       }
-    } else {
-      return [];
     }
 
   };

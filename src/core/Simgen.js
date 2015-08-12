@@ -36,4 +36,4 @@ Simgen.prototype.entity = function(name, modules, constructor) {
   return this;
 };
 
-module.exports = new Simgen();
+module.exports = Simgen;
