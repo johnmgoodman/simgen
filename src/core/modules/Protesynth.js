@@ -103,7 +103,7 @@ methods = {
       products.push(new product.constructor);
     }
 
-    dispatchProducts(err, products, callback);
+    dispatchProducts(err, {products: products, remaining: polypeps}, callback);
   },
 
   define: function(product, polypeps) {

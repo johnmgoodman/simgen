@@ -18,7 +18,7 @@ var cell = {
 
 };
 
-
+/*
 cell.dna.sequence(
   "ACGTACTGATCGTACGTAGCTAGCTGCAGCGAGATACGACTATCTGGACT" +
   "AGCACATATAAGACTACTGACTGATCTACGTACTAGCTACTGACTGACTG" +
@@ -47,8 +47,11 @@ cell.dna.sequence(
   "TACGTGCATGGGCATGCAGTGACTTACGGCGGCTACGTCAGGTGCTGCCT" +
   "TAGCGTACTAGAGCGATTGGGGGGCATGCAGTCAGACGTGGCCGGACGAC" +
   "AGACGGAGCGCATGATTGGGGGGATGGCGACTTACGTAGCTACCCGTGCC"
+);*/
+
+cell.dna.sequence(
+  "ATATAAATGTAGAAAAAAAAAAAAAAATATAAATGTTGTAGAAAAAAAAAATATAAATGTCGAAAAAAAAA"
 );
-console.log(cell);
 
 simgen.protesynth_define(
   function() { this.type = 'random protein';},
@@ -64,20 +67,39 @@ simgen.protesynth_define(
   }
 );
 
+simgen.protesynth_define(
+  function() { this.type = 'test protein 1';},
+  {
+    'M': 1
+  }
+);
+
+simgen.protesynth_define(
+  function() { this.type = 'test protein 2';},
+  {
+    'Mb': 1
+  }
+);
+
+var polypeps = {};
+
+var onPSynth = function(err, products) {
+  polypeps = products.remaining;
+  console.log('-------');
+  console.log(polypeps);
+  console.log(products.products);
+};
+
 var onTranslate = (function() {
-  var polypeps = [];
 
   return function(err, pp) {
-    if(!err) {
-      polypeps.push(pp);
-      if(polypeps.length % 4 === 0) {
-        simgen.protesynth_synthesize(polypeps, function(err, proteins) {
-          proteins.forEach(function(p) {
-            console.log("synthesized: " + p.type);
-          });
-        });
-      }
+    if(polypeps.hasOwnProperty(pp)) {
+      polypeps[pp] += 1;
+    } else {
+      polypeps[pp] = 1;
     }
+    //console.log(polypeps);
+    simgen.protesynth_synthesize(polypeps, onPSynth);
   }
 })();
 
