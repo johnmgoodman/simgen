@@ -41,6 +41,31 @@ module.exports = (function() {
         this.__nucleicAcidSequence += naseq.substr(index+length);
         return this;
       }
+    },
+
+    helpers: {
+      random_sequence: function(length, nucleotides) {
+        var nchar, i, seq = '';
+
+        nucleotides = nucleotides || ['A','T','C','G'];
+
+        length = length || 1000;
+
+        nchar = nucleotides.length;
+        i = 0;
+
+        for(; i < length; i+=1 ) {
+          seq += Math.floor(Math.random() * nchar);
+        }
+
+        nucleotides.forEach(function(n, i) {
+          seq = seq.replace(new RegExp(i, 'g'), n);
+        });
+
+        this.sequence(seq);
+
+        return this;
+      }
     }
 
   };
@@ -51,5 +76,7 @@ module.exports = (function() {
     this.prototype.nucleic_acid_insertion_mutation = methods.mutations.insertion;
     this.prototype.nucleic_acid_deletion_mutation = methods.mutations.deletion;
     this.prototype.nucleic_acid_duplication_mutation = methods.mutations.duplication;
+
+    this.prototype.nucleic_acid_random_sequence = methods.helpers.random_sequence;
   }
 })();

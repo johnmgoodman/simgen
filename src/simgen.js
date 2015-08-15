@@ -10,6 +10,7 @@ simgen.entity('RNA', 'NucleicAcid', require('./core/RNA'));
 simgen.entity('Aminoid', require('./core/Aminoid'));
 simgen.entity('RNAPoly', require('./core/RNAPoly'));
 simgen.entity('Ribosome', require('./core/Ribosome'));
+simgen.entity('Photein', require('./core/Photein'));
 
 simgen.implement('Protesynth', Simgen);
 
