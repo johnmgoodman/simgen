@@ -157,8 +157,6 @@ setInterval(function() {
  *
  * Todo
  *
- *  Create object to maintain quantities of resources and proteins.
- *    This will reduce stored cell proteins to kv pairs, where k=protein type and v=protein quantity...
- *    No long lists of identical protein objects
+ *  Fix Protesynth so that it doesn't modify the polypeps parameter, but returns modifications for the original polypeps object in the callback
  *
  */
