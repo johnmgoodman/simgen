@@ -70,14 +70,14 @@ cell.dna.nucleic_acid_random_sequence(3500);
 console.log(cell.dna.sequence());
 */
 simgen.protesynth_define(
-  function() { this.type = 'protein 1';},
+  'PROTEIN1',
   {
     'Mjghd': 3
   }
 );
 
 simgen.protesynth_define(
-  function() { this.type = 'protein 2';},
+  'PROTEIN2',
   {
     'Mibrnps': 1
   }
@@ -88,8 +88,10 @@ var polypeps = {};
 var rnas = [];
 var proteins = {};
 
-var onPSynth = function(err, protein) {
-  console.log(arguments);
+var onPSynth = function(err, proteins) {
+  console.log('PSynth ----------');
+  console.log(proteins);
+  
 };
 
 var onTranslate = (function() {

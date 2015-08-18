@@ -1,16 +1,38 @@
 
 var def = {
 
-  products: [
+  proteins: [
     /*
      *  {
-     *    constructor: productConstructor,
+     *    proteinType: productConstructor,
      *    polypeps: {'polypep': 2, 'polypep': 1}
      *  },
      *
      */
   ]
 
+},
+
+/* Fisher-Yates shuffle
+ * 
+ * Thank you, Blender.
+ * http://stackoverflow.com/questions/6274339/how-can-i-shuffle-an-array-in-javascript
+ * 
+ */
+shuffle = function(array) {
+  var counter = array.length, temp, index;
+
+  while (counter > 0) {
+    index = Math.floor(Math.random() * counter);
+
+    counter--;
+
+    temp = array[counter];
+    array[counter] = array[index];
+    array[index] = temp;
+  }
+
+  return array;
 },
 
 uniq = function(array) {
@@ -39,47 +61,43 @@ getAvailableCount = function(query, pool) {
 
 
 search = function(polypeps) {
-  var product, productId, pp, ppRequired, prPolypeps, meetsRequirements;
-
-  for(productId = 0; productId < def.products.length; productId += 1) {
-    product = def.products[productId];
-
-    prPolypeps = product.polypeps;
-    meetsRequirements = true;
-
-
-
-    for(pp in prPolypeps) {
-      if(prPolypeps.hasOwnProperty(pp)) {
-
-
-
-        if(polypeps.hasOwnProperty(pp)) {
-          if(polypeps[pp] < prPolypeps[pp]) {
-            meetsRequirements = false;
-            break;
+  var proteinId,
+    proteins = shuffle(def.proteins.slice(0)),
+    
+    polypepsAvailable = JSON.parse(JSON.stringify(polypeps)),
+    
+    products = [],
+    
+    
+    eachProtein = function(protein, proteinId, proteins) {
+      var reqPP, unmetReq = 0, cost = [];
+      
+      
+      for(reqPP in protein.polypeps) {
+        if(protein.polypeps.hasOwnProperty(reqPP)) {
+          unmetReq += 1;
+          if(polypepsAvailable.hasOwnProperty(reqPP) && polypepsAvailable[reqPP] >= protein.polypeps[reqPP]) {
+            unmetReq -= 1;
           }
-        } else {
-          meetsRequirements = false;
-          break;
-        }
-
-
-
-      }
-    }
-
-
-    if(meetsRequirements === true) {
-      for(pp in prPolypeps) {
-        if(prPolypeps.hasOwnProperty(pp)) {
-          polypeps[pp] -= prPolypeps[pp];
         }
       }
-      return product;
-    }
+      
+      if(unmetReq === 0) {
+        for(reqPP in protein.polypeps) {
+          if(protein.polypeps.hasOwnProperty(reqPP)) {
+            cost.push({polypep: reqPP, quantity: protein.polypeps[reqPP]});
+            polypepsAvailable[reqPP] -= protein[reqPP];
+            products.push({protein: protein.proteinType, cost: cost});
+          }
+        }
+      }
+      
+    };
+    
 
-  };
+  proteins.forEach(eachProtein);
+  
+  return products;
 
 },
 
@@ -99,22 +117,19 @@ methods = {
       polypeps = getAvailableCount(uniq(polypeps), polypeps);
     }
 
-    while(product = search(polypeps)) {
-      products.push(new product.constructor);
-    }
-
-    dispatchProducts(err, {products: products, remaining: polypeps}, callback);
+    products = search(polypeps);
+    dispatchProducts(err, products, callback);
   },
 
-  define: function(product, polypeps) {
-    var productId = def.products.length, pp;
+  define: function(proteinType, polypeps) {
+    var proteinId = def.proteins.length, pp;
 
     if(polypeps instanceof Array) {
       polypeps = getAvailableCount(uniq(polypeps), polypeps);
     }
 
-    def.products[productId] = {
-      constructor: product,
+    def.proteins[proteinId] = {
+      proteinType: proteinType,
       polypeps: polypeps
     };
 
