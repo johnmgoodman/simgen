@@ -18,6 +18,8 @@ var cell = {
     RNAPoly: 3,
     Photein: 2,
   }),
+  
+  polypeps: new Repo(),
 
   aminoids: (function(aminoidData) {
     as = [];
@@ -83,56 +85,55 @@ simgen.protesynth_define(
   }
 );
 
-
-var polypeps = {};
 var rnas = [];
-var proteins = {};
 
-var onPSynth = function(err, proteins) {
-  console.log('PSynth ----------');
-  console.log(proteins);
+setInterval(function() {
+  simgen.protesynth_synthesize(cell.polypeps.items(), function(err, proteins) {
+    proteins.forEach(function(protein) {
+      cell.proteins.applyItem(protein.proteinType, 1);
+      cell.polypeps.apply(protein.cost);
+    });
+  });
   
-};
-
-var onTranslate = (function() {
-
-  return function(err, pp) {
-    if(polypeps.hasOwnProperty(pp)) {
-      polypeps[pp] += 1;
-    } else {
-      polypeps[pp] = 1;
-    }
-    console.log(polypeps);
-    simgen.protesynth_synthesize(polypeps, onPSynth);
-  }
-})();
-
-
-var onTranscribe = function(err, rna) {
-  //console.log(rna);
-  rnas.push(rna);
-};
-
+  console.log(cell.proteins.items());
+}, 2000);
 
 
 setInterval(function() {
   var nribo = Math.floor(Math.random() * cell.proteins.quantityOf('Ribosome')),
   iribo = 0,
-  ribo = simgen.create('Ribosome');
-
-  for(; iribo < nribo && rnas.length > 0; iribo += 1) {
-    ribo.translate(rnas.pop(), onTranslate);
+  ribo = simgen.create('Ribosome'),
+  rna = rnas.pop();
+  
+  onTranslate = function(err, pp) {
+    cell.polypeps.apply(pp, 1);
+    iribo += 1;
+    
+    if(iribo < nribo) {
+      ribo.translate(rnas.pop(), onTranslate);
+    }
+  };
+  
+  if(rna) {
+    ribo.translate(rna, onTranslate);
   }
+  
 }, 2000);
 
 setInterval(function() {
   var nrnap = Math.floor(Math.random() * cell.proteins.quantityOf('RNAPoly'));
     irnap = 0,
-    rnap = simgen.create('RNAPoly');
-
-  for(; irnap < nrnap; irnap += 1) {
-    rnap.transcribe(cell.dna, onTranscribe);
-  }
+    rnap = simgen.create('RNAPoly'),
+    onTranscribe = function(err, rna) {
+      rnas.push(rna);
+      irnap += 1;
+      
+      if(irnap < nrnap) {
+        rnap.transcribe(cell.dna, onTranscribe);
+      }
+    };
+    
+  rnap.transcribe(cell.dna, onTranscribe);
 }, 2500);
 
 
@@ -144,14 +145,11 @@ setInterval(function() {
     cell.resources.apply(products);
     ipho += 1;
 
-    //console.log(products);
     if(ipho < nphos) {
       photein.synthesize(cell.resources.items(), onPhoSynth);
     }
   };
 
-  //console.log('------------------------------------------------');
-  //console.log(cell.resources.items());
   photein.synthesize(cell.resources.items(), onPhoSynth);
 }, 700);
 

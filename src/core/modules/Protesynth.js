@@ -70,7 +70,7 @@ search = function(polypeps) {
     
     
     eachProtein = function(protein, proteinId, proteins) {
-      var reqPP, unmetReq = 0, cost = [];
+      var reqPP, unmetReq = 0, cost = {};
       
       
       for(reqPP in protein.polypeps) {
@@ -85,9 +85,9 @@ search = function(polypeps) {
       if(unmetReq === 0) {
         for(reqPP in protein.polypeps) {
           if(protein.polypeps.hasOwnProperty(reqPP)) {
-            cost.push({polypep: reqPP, quantity: protein.polypeps[reqPP]});
+            cost[reqPP] = -1 * protein.polypeps[reqPP];
             polypepsAvailable[reqPP] -= protein[reqPP];
-            products.push({protein: protein.proteinType, cost: cost});
+            products.push({proteinType: protein.proteinType, cost: cost});
           }
         }
       }
